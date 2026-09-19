@@ -388,7 +388,40 @@
       margin-top: 8px;
     }
 
-    .actions[hidden], .flip-hint[hidden] { display: none !important; }
+    .actions[hidden], .flip-hint[hidden], .diff-setter[hidden] { display: none !important; }
+
+    .diff-setter {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .diff-setter-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .diff-setter-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (min-width: 420px) {
+      .diff-setter-row { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .diff-setter .chip {
+      justify-content: center;
+      text-align: center;
+      font-size: 0.82rem;
+      min-height: 40px;
+    }
 
     .btn {
       min-height: var(--tap);
@@ -1346,9 +1379,12 @@
 
     const STORAGE_KEY = "spanish-flashcards-session-v3";
     const CUSTOM_DECK_KEY = "spanish-flashcards-custom-deck-v1";
+    const DIFF_OVERRIDE_KEY = "spanish-flashcards-diff-overrides-v1";
     const REVIEW_DELAY = 3;
+    const DIFF_LEVELS = ["아주쉬움", "쉬움", "어려움", "아주어려움"];
 
     let customCards = loadCustomCards();
+    let diffOverrides = loadDiffOverrides();
     let ALL_TOPICS = rebuildTopics();
     let CARDS = rebuildCards();
 
@@ -1412,6 +1448,40 @@
       } catch (e) {
         setCsvStatus("저장 실패: 브라우저 저장 공간이 부족할 수 있어요.", true);
       }
+    }
+
+    function loadDiffOverrides() {
+      try {
+        const raw = localStorage.getItem(DIFF_OVERRIDE_KEY);
+        if (!raw) return {};
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+        const out = {};
+        Object.keys(data).forEach((k) => {
+          if (VALID_DIFF.has(data[k])) out[String(k)] = data[k];
+        });
+        return out;
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveDiffOverrides() {
+      try {
+        localStorage.setItem(DIFF_OVERRIDE_KEY, JSON.stringify(diffOverrides));
+      } catch (_) {}
+    }
+
+    function getEffectiveDifficulty(card) {
+      if (!card) return "";
+      const o = diffOverrides[String(card.id)];
+      return o || card.difficulty;
+    }
+
+    function setCardDifficulty(card, difficulty) {
+      if (!card || !VALID_DIFF.has(difficulty)) return;
+      diffOverrides[String(card.id)] = difficulty;
+      saveDiffOverrides();
     }
 
     function rebuildTopics() {
@@ -1572,7 +1642,7 @@
         const topicOk = state.topics.length === 0
           ? false
           : c.topics.some((t) => state.topics.includes(t));
-        const diffOk = state.filter === "전체" || c.difficulty === state.filter;
+        const diffOk = state.filter === "전체" || getEffectiveDifficulty(c) === state.filter;
         return topicOk && diffOk;
       });
     }
@@ -1870,6 +1940,7 @@
       const flippedClass = state.flipped ? " flipped" : "";
       const topics = (card.topics || []).join(" · ");
       const target = state.currentTarget || "colloquialSpain";
+      const effDiff = getEffectiveDifficulty(card);
       const frontHint = state.mode === "mixed"
         ? `한국어 → ${registerLabel(target)}로 말해 보세요`
         : "한국어 → 스페인어 (본토 구어 기준)";
@@ -1881,12 +1952,33 @@
            </div>`
         : "";
 
+      const answerControls = state.flipped ? `
+        <div class="actions" id="actions">
+          <button type="button" class="btn btn-wrong" id="btnWrong">틀림</button>
+          <button type="button" class="btn btn-right" id="btnRight">맞음</button>
+        </div>
+        <div class="diff-setter" id="diffSetter">
+          <div class="diff-setter-label">이 문장 난이도</div>
+          <div class="diff-setter-row">
+            ${DIFF_LEVELS.map((d) => `
+              <button type="button" class="chip${effDiff === d ? " active" : ""}" data-diff="${escapeHtml(d)}">${escapeHtml(d)}</button>
+            `).join("")}
+          </div>
+        </div>
+      ` : `
+        <p class="flip-hint" id="flipHint">
+          ${state.mode === "mixed"
+            ? `카드를 탭하면 세 가지 스페인어 변형이 나와요 · 목표는 <strong>${escapeHtml(registerLabel(target))}</strong>`
+            : "카드를 탭하면 구어체·문어체·중남미 구어체가 나와요"}
+        </p>
+      `;
+
       els.stage.innerHTML = `
         <button type="button" class="card-scene" id="cardScene" aria-label="카드 뒤집기">
           <div class="card${flippedClass}" id="flashcard">
             <div class="card-face front">
               <div class="card-top">
-                <span class="badge ${card.difficulty}">${escapeHtml(card.difficulty)}</span>
+                <span class="badge ${escapeHtml(effDiff)}">${escapeHtml(effDiff)}</span>
                 ${state.mode === "mixed" ? `<span class="badge target">${escapeHtml(registerLabel(target))}</span>` : ""}
                 <span class="hint">한국어</span>
               </div>
@@ -1895,7 +1987,7 @@
             </div>
             <div class="card-face back">
               <div class="card-top">
-                <span class="badge ${card.difficulty}">${escapeHtml(card.difficulty)}</span>
+                <span class="badge ${escapeHtml(effDiff)}">${escapeHtml(effDiff)}</span>
                 <span class="badge topic">${escapeHtml(topics)}</span>
                 <span class="hint">스페인어 변형</span>
               </div>
@@ -1914,26 +2006,36 @@
             </div>
           </div>
         </button>
-        <p class="flip-hint" id="flipHint" ${state.flipped ? "hidden" : ""}>
-          ${state.mode === "mixed"
-            ? `카드를 탭하면 세 가지 스페인어 변형이 나와요 · 목표는 <strong>${escapeHtml(registerLabel(target))}</strong>`
-            : "카드를 탭하면 구어체·문어체·중남미 구어체가 나와요"}
-        </p>
-        <div class="actions" id="actions" ${state.flipped ? "" : "hidden"}>
-          <button type="button" class="btn btn-wrong" id="btnWrong">틀림</button>
-          <button type="button" class="btn btn-right" id="btnRight">맞음</button>
-        </div>
+        ${answerControls}
       `;
 
       document.getElementById("cardScene").addEventListener("click", flipCard);
-      document.getElementById("btnWrong").addEventListener("click", (e) => {
-        e.stopPropagation();
-        markWrong();
-      });
-      document.getElementById("btnRight").addEventListener("click", (e) => {
-        e.stopPropagation();
-        markCorrect();
-      });
+      const btnWrong = document.getElementById("btnWrong");
+      const btnRight = document.getElementById("btnRight");
+      if (btnWrong) {
+        btnWrong.addEventListener("click", (e) => {
+          e.stopPropagation();
+          markWrong();
+        });
+      }
+      if (btnRight) {
+        btnRight.addEventListener("click", (e) => {
+          e.stopPropagation();
+          markCorrect();
+        });
+      }
+      const diffSetter = document.getElementById("diffSetter");
+      if (diffSetter) {
+        diffSetter.querySelectorAll("[data-diff]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const d = btn.getAttribute("data-diff");
+            if (!d || d === getEffectiveDifficulty(card)) return;
+            setCardDifficulty(card, d);
+            render();
+          });
+        });
+      }
     }
 
     function renderSummary() {
