@@ -678,6 +678,189 @@
       vertical-align: middle;
     }
 
+
+    /* ===== 주간 레벨 보고 ===== */
+    .level-panel {
+      background: linear-gradient(145deg, #f4f7ff 0%, #fff 55%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 8px rgba(44, 36, 24, 0.04);
+    }
+    .level-panel > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .level-panel > summary::-webkit-details-marker { display: none; }
+    .level-panel > summary::after {
+      content: "펼치기";
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: #eef2ff;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .level-panel[open] > summary::after { content: "접기"; }
+    .level-summary-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-deep);
+    }
+    .level-badge-mini {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+    }
+    .level-body { margin-top: 12px; }
+    .level-disclaimer {
+      font-size: 0.74rem;
+      color: var(--ink-soft);
+      line-height: 1.45;
+      background: #f8f6f1;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+    }
+    .level-disclaimer strong { color: var(--ink); }
+    .level-hero {
+      text-align: center;
+      padding: 14px 10px 10px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .level-hero .level-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      letter-spacing: 0.04em;
+    }
+    .level-hero .level-big {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--accent-deep);
+      line-height: 1.1;
+      margin: 4px 0 2px;
+      letter-spacing: 0.04em;
+    }
+    .level-hero .level-sub {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+    .level-basis {
+      font-size: 0.82rem;
+      color: var(--ink);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .level-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 420px) {
+      .level-stats { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+    .level-stat {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .level-stat strong {
+      display: block;
+      font-size: 1.05rem;
+      color: var(--ink);
+      font-weight: 800;
+    }
+    .level-stat span {
+      font-size: 0.7rem;
+      color: var(--ink-soft);
+      font-weight: 600;
+    }
+    .level-mix {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .level-mix strong { color: var(--ink); }
+    .level-history {
+      margin-top: 4px;
+      margin-bottom: 10px;
+    }
+    .level-history-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .level-history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      padding: 6px 0;
+      border-top: 1px dashed var(--border);
+      color: var(--ink-soft);
+    }
+    .level-history-row:first-of-type { border-top: none; }
+    .level-history-row .lh-level {
+      font-weight: 800;
+      color: var(--accent-deep);
+      min-width: 2.2em;
+      text-align: right;
+    }
+    .level-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn-copy-report {
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .btn-copy-report:active { transform: scale(0.97); }
+    .btn-copy-report.copied {
+      background: #2f6b4f;
+      border-color: #2f6b4f;
+    }
+    .level-empty {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      padding: 8px 0 4px;
+    }
+
     @media (min-width: 480px) {
       .app { padding-top: 24px; }
       .card, .card-scene { min-height: 340px; }
@@ -708,6 +891,24 @@
       </div>
       <div class="deck-meta" id="dailyMeta" style="margin-top:8px"></div>
     </div>
+
+    <details class="level-panel" id="levelPanel">
+      <summary>
+        <span>주간 레벨 보고 <span style="font-weight:600;color:var(--ink-soft);font-size:0.78rem">· DELE/CEFR 추정</span></span>
+        <span class="level-summary-right" id="levelSummaryRight">
+          <span class="level-badge-mini" id="levelBadgeMini">—</span>
+        </span>
+      </summary>
+      <div class="level-body" id="levelBody">
+        <div class="level-disclaimer">
+          <strong>추정</strong> · 학습 기록 기반입니다. 공식 DELE 등급이 아니며, 실제 DELE는 공인 시험이 필요합니다.
+        </div>
+        <div id="levelContent"></div>
+        <div class="level-actions">
+          <button type="button" class="btn-copy-report" id="btnCopyLevelReport">보고서 복사</button>
+        </div>
+      </div>
+    </details>
 
     <div class="panel" id="topicPanel">
       <div class="panel-title">
@@ -765,7 +966,7 @@
 
     <div class="stage" id="stage"></div>
 
-    <footer>제이콥 · 스페인 본토 생활 스페인어<br/>오늘의 세트 · 주간 복습(맞혀도 주에 약 2번)</footer>
+    <footer>제이콥 · 스페인 본토 생활 스페인어<br/>오늘의 세트 · 주간 복습 · 주간 레벨 보고(추정)</footer>
   </div>
 
   <script src="cards.js"></script>
@@ -1665,20 +1866,32 @@
     const DIFF_OVERRIDE_KEY = "spanish-flashcards-diff-overrides-v1";
     const WEEKLY_KEY = "spanish-flashcards-weekly-v1";
     const SETTINGS_KEY = "spanish-flashcards-settings-v1";
+    const LEARN_LOG_KEY = "spanish-flashcards-learn-log-v1";
+    const LEVEL_HISTORY_KEY = "spanish-flashcards-level-history-v1";
     const REVIEW_DELAY = 3;
     const WEEKLY_TARGET = 2; /* ~2 exposures per rolling 7-day week */
     const DIFF_LEVELS = ["아주쉬움", "쉬움", "어려움", "아주어려움"];
     const DAILY_TARGET_OPTIONS = [12, 15, 18, 20, 25];
     const DEFAULT_DAILY_TARGET = 18;
+    const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+    /* difficulty → base CEFR score (A1=0 … C2=5). 아주쉬움 ≈ A2–B1 경계 */
+    const DIFF_CEFR_SCORE = {
+      "아주쉬움": 1.5,
+      "쉬움": 2.0,
+      "어려움": 3.0,
+      "아주어려움": 4.0
+    };
 
     let customCards = loadCustomCards();
     let diffOverrides = loadDiffOverrides();
     let weeklyState = loadWeeklyState();
     let settings = loadSettings();
+    let learnLog = loadLearnLog();
+    let levelHistory = loadLevelHistory();
+    /* state must exist before rebuildCards() — accessing `state` in TDZ crashes the whole app */
+    let state = null;
     let ALL_TOPICS = rebuildTopics();
-    let CARDS = rebuildCards();
-
-    const state = {
+    state = {
       topics: ALL_TOPICS.map((t) => t.id),
       filter: "전체",
       mode: "basic",
@@ -1696,8 +1909,7 @@
       completedBasicPass: false,
       dailyIds: []
     };
-
-    CARDS = rebuildCards();
+    let CARDS = rebuildCards();
 
     const els = {
       topicChips: document.getElementById("topicChips"),
@@ -1719,7 +1931,11 @@
       btnTopicsAll: document.getElementById("btnTopicsAll"),
       csvFile: document.getElementById("csvFile"),
       btnClearCsv: document.getElementById("btnClearCsv"),
-      csvStatus: document.getElementById("csvStatus")
+      csvStatus: document.getElementById("csvStatus"),
+      levelPanel: document.getElementById("levelPanel"),
+      levelContent: document.getElementById("levelContent"),
+      levelBadgeMini: document.getElementById("levelBadgeMini"),
+      btnCopyLevelReport: document.getElementById("btnCopyLevelReport")
     };
 
     function normalizeCard(c) {
@@ -1800,6 +2016,47 @@
       } catch (_) {}
     }
 
+    function loadLearnLog() {
+      try {
+        const raw = localStorage.getItem(LEARN_LOG_KEY);
+        if (!raw) return { events: [] };
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return { events: [] };
+        const events = Array.isArray(data.events) ? data.events : [];
+        return { events: events.slice(-8000) };
+      } catch (_) {
+        return { events: [] };
+      }
+    }
+
+    function saveLearnLog() {
+      try {
+        if (learnLog.events.length > 8000) {
+          learnLog.events = learnLog.events.slice(-6000);
+        }
+        localStorage.setItem(LEARN_LOG_KEY, JSON.stringify(learnLog));
+      } catch (_) {}
+    }
+
+    function loadLevelHistory() {
+      try {
+        const raw = localStorage.getItem(LEVEL_HISTORY_KEY);
+        if (!raw) return { weeks: {} };
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return { weeks: {} };
+        const weeks = data.weeks && typeof data.weeks === "object" ? data.weeks : {};
+        return { weeks };
+      } catch (_) {
+        return { weeks: {} };
+      }
+    }
+
+    function saveLevelHistory() {
+      try {
+        localStorage.setItem(LEVEL_HISTORY_KEY, JSON.stringify(levelHistory));
+      } catch (_) {}
+    }
+
     function getEffectiveDifficulty(card) {
       const o = diffOverrides[String(card.id)];
       return (o && VALID_DIFF.has(o)) ? o : card.difficulty;
@@ -1829,8 +2086,9 @@
     }
 
     function rebuildCards() {
-      if (state && state.deckSource === "csv") return customCards.slice();
-      if (state && state.deckSource === "merge") return BUILTIN_CARDS.concat(customCards);
+      if (!state) return BUILTIN_CARDS.slice();
+      if (state.deckSource === "csv") return customCards.slice();
+      if (state.deckSource === "merge") return BUILTIN_CARDS.concat(customCards);
       return BUILTIN_CARDS.slice();
     }
 
@@ -1878,7 +2136,358 @@
       return dt.getFullYear() + "년 " + (dt.getMonth() + 1) + "월 " + dt.getDate() + "일 (" + w + ")";
     }
 
+    /* ===== 주간 레벨 보고 (DELE/CEFR 추정) ===== */
+
+    /** Calendar week starting Monday (local). Returns YYYY-MM-DD of Monday. */
+    function weekStartMonday(dateKey) {
+      const dt = parseDateKey(dateKey || localDateKey());
+      const day = dt.getDay(); /* 0=Sun … 6=Sat */
+      const offset = day === 0 ? -6 : 1 - day;
+      dt.setDate(dt.getDate() + offset);
+      return localDateKey(dt);
+    }
+
+    function weekEndSunday(weekStart) {
+      return addDays(weekStart, 6);
+    }
+
+    function formatWeekRange(weekStart) {
+      const a = parseDateKey(weekStart);
+      const b = parseDateKey(weekEndSunday(weekStart));
+      const fmt = (d) => (d.getMonth() + 1) + "/" + d.getDate();
+      return fmt(a) + "–" + fmt(b);
+    }
+
+    function logAnswerEvent(card, correct) {
+      if (!card) return;
+      const difficulty = getEffectiveDifficulty(card);
+      const topics = Array.isArray(card.topics) ? card.topics.slice() : [];
+      learnLog.events.push({
+        date: localDateKey(),
+        cardId: String(card.id),
+        correct: !!correct,
+        difficulty: difficulty,
+        topics: topics,
+        ts: Date.now()
+      });
+      saveLearnLog();
+    }
+
+    function eventsInWeek(weekStart) {
+      const end = weekEndSunday(weekStart);
+      return (learnLog.events || []).filter((e) => e && e.date >= weekStart && e.date <= end);
+    }
+
+    function aggregateWeek(weekStart) {
+      const events = eventsInWeek(weekStart);
+      const byDiff = {};
+      DIFF_LEVELS.forEach((d) => { byDiff[d] = { correct: 0, wrong: 0 }; });
+      const byTopic = {};
+      const cardIds = new Set();
+      let correct = 0;
+      let wrong = 0;
+      const activeDays = new Set();
+
+      events.forEach((e) => {
+        const ok = !!e.correct;
+        if (ok) correct += 1; else wrong += 1;
+        if (e.date) activeDays.add(e.date);
+        if (e.cardId) cardIds.add(String(e.cardId));
+        const d = VALID_DIFF.has(e.difficulty) ? e.difficulty : "쉬움";
+        if (!byDiff[d]) byDiff[d] = { correct: 0, wrong: 0 };
+        if (ok) byDiff[d].correct += 1; else byDiff[d].wrong += 1;
+        (e.topics || []).forEach((t) => {
+          if (!byTopic[t]) byTopic[t] = { correct: 0, wrong: 0 };
+          if (ok) byTopic[t].correct += 1; else byTopic[t].wrong += 1;
+        });
+      });
+
+      const total = correct + wrong;
+      const accuracy = total ? correct / total : 0;
+      return {
+        weekStart,
+        events: events.length,
+        correct,
+        wrong,
+        total,
+        accuracy,
+        byDiff,
+        byTopic,
+        uniqueCards: cardIds.size,
+        activeDays: activeDays.size
+      };
+    }
+
+    function scoreToLevel(score) {
+      const s = Math.max(0, Math.min(5, score));
+      const idx = Math.round(s);
+      return CEFR_LEVELS[idx];
+    }
+
+    /**
+     * Heuristic CEFR estimate (labeled 추정):
+     * 1) Base = weighted avg of difficulty→score (아주쉬움 1.5 … 아주어려움 4.0)
+     * 2) Accuracy nudge: high acc on hard → up; low acc on easy → down
+     * 3) Overall accuracy slight nudge
+     * Never claims official DELE.
+     */
+    function estimateLevelFromAgg(agg) {
+      if (!agg || agg.total < 3) {
+        return {
+          level: null,
+          score: null,
+          confidence: "없음",
+          basis: "이번 주 학습 기록이 아직 부족해요. 카드를 몇 장 더 풀어 주세요.",
+          dominantDiff: null,
+          nudge: 0
+        };
+      }
+
+      let wSum = 0;
+      let wTotal = 0;
+      DIFF_LEVELS.forEach((d) => {
+        const row = agg.byDiff[d] || { correct: 0, wrong: 0 };
+        const n = row.correct + row.wrong;
+        if (!n) return;
+        const score = DIFF_CEFR_SCORE[d] != null ? DIFF_CEFR_SCORE[d] : 2;
+        wSum += score * n;
+        wTotal += n;
+      });
+      const base = wTotal ? wSum / wTotal : 2;
+
+      const hard = {
+        correct: (agg.byDiff["어려움"] || {}).correct + (agg.byDiff["아주어려움"] || {}).correct,
+        wrong: (agg.byDiff["어려움"] || {}).wrong + (agg.byDiff["아주어려움"] || {}).wrong
+      };
+      const easy = {
+        correct: (agg.byDiff["아주쉬움"] || {}).correct + (agg.byDiff["쉬움"] || {}).correct,
+        wrong: (agg.byDiff["아주쉬움"] || {}).wrong + (agg.byDiff["쉬움"] || {}).wrong
+      };
+      const hardN = hard.correct + hard.wrong;
+      const easyN = easy.correct + easy.wrong;
+      const hardAcc = hardN ? hard.correct / hardN : null;
+      const easyAcc = easyN ? easy.correct / easyN : null;
+
+      let nudge = 0;
+      if (hardAcc != null && hardN >= 3) {
+        if (hardAcc >= 0.85) nudge += 0.45;
+        else if (hardAcc >= 0.7) nudge += 0.2;
+        else if (hardAcc < 0.45) nudge -= 0.25;
+      }
+      if (easyAcc != null && easyN >= 3) {
+        if (easyAcc < 0.5) nudge -= 0.5;
+        else if (easyAcc < 0.65) nudge -= 0.25;
+        else if (easyAcc >= 0.9 && hardN < 2) nudge -= 0.1;
+      }
+      if (agg.accuracy >= 0.88 && agg.total >= 8) nudge += 0.15;
+      else if (agg.accuracy < 0.5 && agg.total >= 8) nudge -= 0.35;
+      else if (agg.accuracy < 0.6 && agg.total >= 8) nudge -= 0.15;
+
+      if (agg.uniqueCards < 5 && base + nudge > 2.5) nudge -= 0.3;
+      if (agg.total < 8 && base + nudge > 3) nudge -= 0.4;
+
+      const finalScore = Math.max(0, Math.min(5, base + nudge));
+      const level = scoreToLevel(finalScore);
+
+      let dominantDiff = "쉬움";
+      let domN = -1;
+      DIFF_LEVELS.forEach((d) => {
+        const row = agg.byDiff[d] || { correct: 0, wrong: 0 };
+        const n = row.correct + row.wrong;
+        if (n > domN) { domN = n; dominantDiff = d; }
+      });
+
+      let confidence;
+      if (agg.total >= 40 && agg.uniqueCards >= 15) confidence = "보통";
+      else if (agg.total >= 15 && agg.uniqueCards >= 6) confidence = "낮음~보통";
+      else confidence = "낮음";
+
+      const accPct = Math.round(agg.accuracy * 100);
+      const basis =
+        "이번 주 정답률 " + accPct + "% · 주로 푼 난이도 «" + dominantDiff + "»" +
+        " · 학습 " + agg.uniqueCards + "장/" + agg.total + "회" +
+        (agg.activeDays ? " · " + agg.activeDays + "일 활동" : "");
+
+      return {
+        level,
+        score: Math.round(finalScore * 100) / 100,
+        confidence,
+        basis,
+        dominantDiff,
+        nudge: Math.round(nudge * 100) / 100,
+        base: Math.round(base * 100) / 100
+      };
+    }
+
+    function persistWeekEstimate(weekStart, estimate, agg) {
+      if (!estimate || !estimate.level || !agg || agg.total < 3) return;
+      levelHistory.weeks[weekStart] = {
+        level: estimate.level,
+        score: estimate.score,
+        confidence: estimate.confidence,
+        accuracy: Math.round(agg.accuracy * 1000) / 1000,
+        total: agg.total,
+        uniqueCards: agg.uniqueCards,
+        dominantDiff: estimate.dominantDiff,
+        updatedAt: localDateKey()
+      };
+      const keys = Object.keys(levelHistory.weeks).sort();
+      while (keys.length > 16) {
+        delete levelHistory.weeks[keys.shift()];
+      }
+      saveLevelHistory();
+    }
+
+    function getPastWeekEstimates(currentWeekStart, limit) {
+      const lim = limit || 8;
+      const keys = Object.keys(levelHistory.weeks || {})
+        .filter((k) => k !== currentWeekStart)
+        .sort()
+        .reverse()
+        .slice(0, lim);
+      return keys.map((k) => ({ weekStart: k, ...(levelHistory.weeks[k] || {}) }));
+    }
+
+    function mixText(byMap, limit) {
+      const lim = limit || 4;
+      const rows = Object.keys(byMap).map((k) => {
+        const r = byMap[k];
+        return { k, n: (r.correct || 0) + (r.wrong || 0) };
+      }).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+      if (!rows.length) return "—";
+      return rows.slice(0, lim).map((x) => x.k + " " + x.n + "회").join(" · ");
+    }
+
+    function buildLevelReportText(agg, estimate, weekStart) {
+      const range = formatWeekRange(weekStart);
+      const lines = [];
+      lines.push("📊 스페인어 주간 레벨 보고 (추정)");
+      lines.push("기간: " + range + " (월–일)");
+      if (estimate.level) {
+        lines.push("추정 레벨: " + estimate.level + " (DELE/CEFR 정렬 · 학습 기록 기반)");
+        lines.push("신뢰: " + estimate.confidence);
+      } else {
+        lines.push("추정 레벨: 데이터 부족");
+      }
+      lines.push("근거: " + (estimate.basis || ""));
+      if (agg.total) {
+        lines.push(
+          "통계: 학습 " + agg.uniqueCards + "장 · " + agg.total + "회 · 정답률 " +
+          Math.round(agg.accuracy * 100) + "% · 활동 " + agg.activeDays + "일"
+        );
+        lines.push("난이도: " + mixText(agg.byDiff, 4));
+        lines.push("주제: " + mixText(agg.byTopic, 5));
+      }
+      lines.push("");
+      lines.push("※ 공식 DELE 시험 결과가 아닙니다. 실제 DELE는 공인 시험이 필요합니다.");
+      return lines.join("\n");
+    }
+
+    let _lastLevelReportText = "";
+
+    function renderLevelReport() {
+      if (!els.levelContent) return;
+      const today = localDateKey();
+      const weekStart = weekStartMonday(today);
+      const agg = aggregateWeek(weekStart);
+      const estimate = estimateLevelFromAgg(agg);
+      persistWeekEstimate(weekStart, estimate, agg);
+
+      if (els.levelBadgeMini) {
+        els.levelBadgeMini.textContent = estimate.level || "—";
+      }
+
+      _lastLevelReportText = buildLevelReportText(agg, estimate, weekStart);
+
+      if (agg.total === 0) {
+        els.levelContent.innerHTML =
+          '<div class="level-empty">이번 주 학습 기록이 아직 없어요. 카드를 풀면 여기에 <strong>추정</strong> 레벨과 통계가 쌓입니다. (학습 기록 기반 · 공식 DELE 아님)</div>';
+        return;
+      }
+
+      const midWeek = daysBetween(weekStart, today) < 6;
+      const previewNote = midWeek
+        ? '<div style="font-size:0.78rem;color:var(--ink-soft);margin-bottom:8px">이번 주 보고서 (중간 미리보기 · 주가 끝나면 자동 갱신)</div>'
+        : "";
+
+      const hero = estimate.level
+        ? (
+          '<div class="level-hero">' +
+            '<div class="level-label">추정 레벨 · DELE/CEFR</div>' +
+            '<div class="level-big">' + escapeHtml(estimate.level) + '</div>' +
+            '<div class="level-sub">신뢰 ' + escapeHtml(estimate.confidence) +
+              ' · ' + escapeHtml(formatWeekRange(weekStart)) + '</div>' +
+          '</div>'
+        )
+        : (
+          '<div class="level-hero">' +
+            '<div class="level-label">추정 레벨</div>' +
+            '<div class="level-big" style="font-size:1.4rem">데이터 부족</div>' +
+            '<div class="level-sub">조금만 더 학습해 주세요</div>' +
+          '</div>'
+        );
+
+      const basis = '<div class="level-basis">' + escapeHtml(estimate.basis || "") + '</div>';
+
+      const stats =
+        '<div class="level-stats">' +
+          '<div class="level-stat"><strong>' + agg.uniqueCards + '</strong><span>학습 카드</span></div>' +
+          '<div class="level-stat"><strong>' + Math.round(agg.accuracy * 100) + '%</strong><span>정답률</span></div>' +
+          '<div class="level-stat"><strong>' + agg.total + '</strong><span>풀이 횟수</span></div>' +
+          '<div class="level-stat"><strong>' + agg.activeDays + '</strong><span>활동 일수</span></div>' +
+        '</div>';
+
+      const mix =
+        '<div class="level-mix"><strong>난이도 구성</strong><br/>' + escapeHtml(mixText(agg.byDiff, 4)) +
+        '<br/><strong>주제 구성</strong><br/>' + escapeHtml(mixText(agg.byTopic, 5)) + '</div>';
+
+      const past = getPastWeekEstimates(weekStart, 8);
+      let hist = "";
+      if (past.length) {
+        hist = '<div class="level-history"><div class="level-history-title">지난 주 추정 (최대 8주)</div>' +
+          past.map((p) =>
+            '<div class="level-history-row"><span>' + escapeHtml(formatWeekRange(p.weekStart)) +
+            (p.accuracy != null ? " · 정답 " + Math.round(p.accuracy * 100) + "%" : "") +
+            '</span><span class="lh-level">' + escapeHtml(p.level || "—") + '</span></div>'
+          ).join("") + '</div>';
+      }
+
+      els.levelContent.innerHTML = previewNote + hero + basis + stats + mix + hist;
+    }
+
+    async function copyLevelReport() {
+      if (!_lastLevelReportText) renderLevelReport();
+      const payload = _lastLevelReportText || "이번 주 학습 기록이 아직 없어요.";
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(payload);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = payload;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        if (els.btnCopyLevelReport) {
+          const btn = els.btnCopyLevelReport;
+          const prev = btn.textContent;
+          btn.textContent = "복사됨!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = prev;
+            btn.classList.remove("copied");
+          }, 1600);
+        }
+      } catch (_) {
+        if (els.btnCopyLevelReport) els.btnCopyLevelReport.textContent = "복사 실패";
+      }
+    }
+
     function hashSeed(str) {
+
       let h = 2166136261 >>> 0;
       for (let i = 0; i < str.length; i++) {
         h ^= str.charCodeAt(i);
@@ -2381,6 +2990,7 @@
     function markCorrect() {
       if (!state.current || !state.flipped) return;
       const today = localDateKey();
+      logAnswerEvent(state.current, true);
       recordExposure(state.current.id, today);
       scheduleAfterCorrect(state.current.id, today);
       state.correct += 1;
@@ -2390,6 +3000,7 @@
     function markWrong() {
       if (!state.current || !state.flipped) return;
       const today = localDateKey();
+      logAnswerEvent(state.current, false);
       recordExposure(state.current.id, today);
       scheduleAfterWrong(state.current.id, today);
       state.wrong += 1;
@@ -2702,6 +3313,7 @@
       updateDailyUI();
       updateProgress();
       updateCsvStatus();
+      renderLevelReport();
       els.progressWrap.style.display = state.done && state.initialTotal === 0 ? "none" : "";
 
       if (state.done && state.initialTotal === 0) {
@@ -2771,6 +3383,10 @@
       state.topics = ALL_TOPICS.map((t) => t.id);
       startSession({ resume: false });
     });
+
+    if (els.btnCopyLevelReport) {
+      els.btnCopyLevelReport.addEventListener("click", () => { copyLevelReport(); });
+    }
 
     /* 시작: 이전 세션 이어하기 */
     try {
