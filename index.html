@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#c45c26" />
+  <title>스페인어 플래시카드</title>
+  <style>
+    :root {
+      --bg: #faf6f1;
+      --bg-card: #ffffff;
+      --ink: #2c2418;
+      --ink-soft: #6b5e4f;
+      --accent: #c45c26;
+      --accent-soft: #e8a87c;
+      --accent-deep: #9a3f14;
+      --ok: #2d7a4f;
+      --ok-bg: #e8f5ee;
+      --bad: #b33a3a;
+      --bad-bg: #fceeee;
+      --border: #eadfce;
+      --shadow: 0 8px 28px rgba(44, 36, 24, 0.1);
+      --radius: 20px;
+      --tap: 52px;
+      --font: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at 20% 0%, #ffe8d6 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 10%, #f5e6d3 0%, transparent 40%),
+        var(--bg);
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      text-align: center;
+      padding: 8px 4px 0;
+    }
+
+    header .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    header h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      margin-top: 4px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .filter-btn:active { transform: scale(0.97); }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .progress-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 2px 8px rgba(44, 36, 24, 0.04);
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .progress-meta strong { color: var(--ink); }
+
+    .progress-bar {
+      height: 8px;
+      background: #efe6da;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .stat.ok { background: var(--ok-bg); }
+    .stat.ok strong { color: var(--ok); }
+    .stat.bad { background: var(--bad-bg); }
+    .stat.bad strong { color: var(--bad); }
+    .stat.queue { background: #f3eee6; }
+
+    .stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 320px;
+    }
+
+    .card-scene {
+      perspective: 1200px;
+      width: 100%;
+      min-height: 280px;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font-family: inherit;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .card-scene:focus-visible .card-face {
+      box-shadow: var(--shadow), 0 0 0 3px var(--accent-soft);
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      min-height: 280px;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .card.flipped { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      padding: 22px 20px;
+      overflow: hidden;
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+      background: linear-gradient(165deg, #fff9f3 0%, #fff 55%);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .badge.아주쉬움 { background: #e5f6ea; color: #1f7a3f; }
+    .badge.쉬움 { background: #e8f0fb; color: #2a5fad; }
+    .badge.어려움 { background: #fff0db; color: #b86a10; }
+    .badge.아주어려움 { background: #fce8e8; color: #a83232; }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+    }
+
+    .card-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 4px;
+    }
+
+    .card-text {
+      font-size: clamp(1.25rem, 4.5vw, 1.55rem);
+      font-weight: 650;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+      word-break: keep-all;
+    }
+
+    .card-face.back .card-text {
+      color: var(--accent-deep);
+      font-size: clamp(1.15rem, 4vw, 1.4rem);
+    }
+
+    .card-label {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      margin-top: 8px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .actions[hidden], .flip-hint[hidden] { display: none !important; }
+
+    .btn {
+      min-height: var(--tap);
+      border: none;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.12s, opacity 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(44, 36, 24, 0.08);
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .btn-wrong {
+      background: var(--bad-bg);
+      color: var(--bad);
+      border: 1.5px solid #f0c8c8;
+    }
+
+    .btn-right {
+      background: var(--ok-bg);
+      color: var(--ok);
+      border: 1.5px solid #c5e5d2;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: var(--tap);
+      background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(196, 92, 38, 0.35);
+    }
+
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-ghost {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 10px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .flip-hint {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      padding: 12px;
+      background: rgba(255,255,255,0.55);
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+    }
+
+    .empty, .summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 24px;
+      text-align: center;
+    }
+
+    .empty h2, .summary h2 {
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+    }
+
+    .empty p, .summary p {
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .summary .big {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin: 8px 0 4px;
+    }
+
+    .summary .sub {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      margin-bottom: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .summary-grid .cell {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 14px 8px;
+    }
+
+    .summary-grid .cell strong {
+      display: block;
+      font-size: 1.4rem;
+      margin-bottom: 2px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #a89888;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    @media (min-width: 480px) {
+      .app { padding-top: 28px; }
+      .card, .card-scene { min-height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="eyebrow">Spanish × Korean</div>
+      <h1>스페인어 플래시카드</h1>
+      <p>부부 일상 회화 · 탭해서 뒤집기</p>
+    </header>
+
+    <div class="filters" id="filters" role="tablist" aria-label="난이도 필터"></div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-meta">
+        <span>진행 <strong id="progressLabel">0 / 0</strong></span>
+        <span id="reviewLabel"></span>
+      </div>
+      <div class="progress-bar" aria-hidden="true"><span id="progressFill"></span></div>
+      <div class="stats-row">
+        <div class="stat ok"><strong id="statCorrect">0</strong>맞음</div>
+        <div class="stat bad"><strong id="statWrong">0</strong>틀림</div>
+        <div class="stat queue"><strong id="statLeft">0</strong>남은 카드</div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage"></div>
+
+    <footer>제이콥 · 아내를 위한 스페인어 학습</footer>
+  </div>
+
+  <script src="cards.js"></script>
+  <script>
+    /* ========== 카드 데이터 (cards.js 우선, 없으면 아래 사용) ========== */
+    const EMBEDDED_CARDS = [
+      { id: 1, front: "Hola, ¿cómo estás?", back: "안녕, 잘 지내?", difficulty: "아주쉬움" },
+      { id: 2, front: "Te quiero mucho.", back: "너를 많이 사랑해.", difficulty: "아주쉬움" },
+      { id: 3, front: "Buenos días.", back: "좋은 아침.", difficulty: "아주쉬움" },
+      { id: 4, front: "Gracias, cariño.", back: "고마워, 여보.", difficulty: "아주쉬움" },
+      { id: 5, front: "¿Tienes hambre?", back: "배고파?", difficulty: "아주쉬움" },
+      { id: 6, front: "¿Qué quieres comer?", back: "뭐 먹고 싶어?", difficulty: "쉬움" },
+      { id: 7, front: "Voy a la tienda.", back: "가게에 갈게.", difficulty: "쉬움" },
+      { id: 8, front: "¿Dónde está el baño?", back: "화장실이 어디야?", difficulty: "쉬움" },
+      { id: 9, front: "Me siento feliz.", back: "기분이 좋아. / 행복해.", difficulty: "쉬움" },
+      { id: 10, front: "¿Quieres un café?", back: "커피 마실래?", difficulty: "쉬움" },
+      { id: 11, front: "¿Puedes ayudarme un momento?", back: "잠깐 도와줄 수 있어?", difficulty: "어려움" },
+      { id: 12, front: "Hoy me siento un poco cansado.", back: "오늘 조금 피곤해.", difficulty: "어려움" },
+      { id: 13, front: "¿Cuánto cuesta esto?", back: "이거 얼마예요?", difficulty: "어려움" },
+      { id: 14, front: "Vamos a pasear juntos.", back: "같이 산책하자.", difficulty: "어려움" },
+      { id: 15, front: "No te preocupes, estoy bien.", back: "걱정 마, 난 괜찮아.", difficulty: "어려움" },
+      { id: 16, front: "Me gustaría reservar una mesa para dos.", back: "두 명 자리 예약하고 싶어요.", difficulty: "아주어려움" },
+      { id: 17, front: "¿Podrías pasarme la sal, por favor?", back: "소금 좀 건네줄래?", difficulty: "아주어려움" },
+      { id: 18, front: "Extraño pasar tiempo contigo cuando viajo.", back: "여행할 때 너와 시간을 보내는 게 그리워.", difficulty: "아주어려움" },
+      { id: 19, front: "¿Qué te parece si cocinamos juntos esta noche?", back: "오늘 밤 같이 요리하는 거 어때?", difficulty: "아주어려움" },
+      { id: 20, front: "Cuando llegues a casa, avísame por favor.", back: "집에 도착하면 알려줘.", difficulty: "아주어려움" }
+    ];
+
+    const ALL_CARDS = (window.FLASHCARDS && window.FLASHCARDS.length)
+      ? window.FLASHCARDS
+      : EMBEDDED_CARDS;
+
+    const DIFFICULTIES = ["전체", "아주쉬움", "쉬움", "어려움", "아주어려움"];
+    const STORAGE_KEY = "spanish-flashcards-session-v1";
+    const REVIEW_DELAY = 3; /* 틀린 카드: 앞으로 몇 장 뒤에 다시 등장 */
+
+    const state = {
+      filter: "전체",
+      queue: [],
+      current: null,
+      flipped: false,
+      correct: 0,
+      wrong: 0,
+      initialTotal: 0,
+      done: false
+    };
+
+    const els = {
+      filters: document.getElementById("filters"),
+      stage: document.getElementById("stage"),
+      progressLabel: document.getElementById("progressLabel"),
+      progressFill: document.getElementById("progressFill"),
+      reviewLabel: document.getElementById("reviewLabel"),
+      statCorrect: document.getElementById("statCorrect"),
+      statWrong: document.getElementById("statWrong"),
+      statLeft: document.getElementById("statLeft"),
+      progressWrap: document.getElementById("progressWrap")
+    };
+
+    function filteredDeck() {
+      if (state.filter === "전체") return ALL_CARDS.slice();
+      return ALL_CARDS.filter((c) => c.difficulty === state.filter);
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function saveSession() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          filter: state.filter,
+          queue: state.queue,
+          currentId: state.current ? state.current.id : null,
+          flipped: state.flipped,
+          correct: state.correct,
+          wrong: state.wrong,
+          initialTotal: state.initialTotal,
+          done: state.done
+        }));
+      } catch (_) { /* ignore quota / private mode */ }
+    }
+
+    function loadSession() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data || data.filter !== state.filter) return false;
+        if (data.done) return false;
+        if (!Array.isArray(data.queue)) return false;
+
+        const byId = Object.fromEntries(ALL_CARDS.map((c) => [c.id, c]));
+        const queue = data.queue.map((id) => byId[id]).filter(Boolean);
+        let current = data.currentId != null ? byId[data.currentId] : null;
+
+        if (!current && queue.length === 0) return false;
+        if (!current && queue.length) current = queue.shift();
+
+        state.queue = queue;
+        state.current = current;
+        state.flipped = !!data.flipped && !!current;
+        state.correct = data.correct || 0;
+        state.wrong = data.wrong || 0;
+        state.initialTotal = data.initialTotal || filteredDeck().length;
+        state.done = false;
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function clearSession() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    }
+
+    function startSession(opts) {
+      const resume = opts && opts.resume;
+      if (resume && loadSession()) {
+        render();
+        return;
+      }
+      const deck = shuffle(filteredDeck());
+      state.queue = deck;
+      state.current = state.queue.length ? state.queue.shift() : null;
+      state.flipped = false;
+      state.correct = 0;
+      state.wrong = 0;
+      state.initialTotal = deck.length + (state.current ? 1 : 0);
+      state.done = state.initialTotal === 0;
+      saveSession();
+      render();
+    }
+
+    function remainingCount() {
+      return (state.current ? 1 : 0) + state.queue.length;
+    }
+
+    function answeredCount() {
+      return state.correct; /* 맞은 것만 '완료'로 집계. 틀린 것은 큐에 재진입 */
+    }
+
+    function updateProgress() {
+      const left = remainingCount();
+      const total = Math.max(state.initialTotal, 1);
+      const done = Math.min(state.correct, state.initialTotal);
+      const pct = state.done ? 100 : Math.round((done / total) * 100);
+
+      els.progressLabel.textContent = state.done
+        ? `${state.initialTotal} / ${state.initialTotal}`
+        : `${done} / ${state.initialTotal}`;
+      els.progressFill.style.width = pct + "%";
+      els.statCorrect.textContent = String(state.correct);
+      els.statWrong.textContent = String(state.wrong);
+      els.statLeft.textContent = String(left);
+
+      const reviewInQueue = state.queue.length;
+      els.reviewLabel.textContent = reviewInQueue > 0 && state.wrong > 0
+        ? `복습 대기 ${reviewInQueue}장`
+        : "";
+    }
+
+    function insertForReview(card) {
+      /* Anki-lite: 몇 장 뒤에 다시, 큐가 짧으면 맨 끝 */
+      const delay = Math.min(REVIEW_DELAY, state.queue.length);
+      const idx = delay;
+      state.queue.splice(idx, 0, card);
+    }
+
+    function markCorrect() {
+      if (!state.current || !state.flipped) return;
+      state.correct += 1;
+      advance();
+    }
+
+    function markWrong() {
+      if (!state.current || !state.flipped) return;
+      state.wrong += 1;
+      insertForReview(state.current);
+      advance();
+    }
+
+    function advance() {
+      state.flipped = false;
+      if (state.queue.length === 0) {
+        state.current = null;
+        state.done = true;
+        clearSession();
+      } else {
+        state.current = state.queue.shift();
+        state.done = false;
+        saveSession();
+      }
+      render();
+    }
+
+    function flipCard() {
+      if (!state.current || state.done) return;
+      state.flipped = !state.flipped;
+      saveSession();
+      render();
+    }
+
+    function renderFilters() {
+      els.filters.innerHTML = "";
+      DIFFICULTIES.forEach((d) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "filter-btn" + (state.filter === d ? " active" : "");
+        btn.textContent = d;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", state.filter === d ? "true" : "false");
+        btn.addEventListener("click", () => {
+          if (state.filter === d) return;
+          state.filter = d;
+          startSession({ resume: false });
+        });
+        els.filters.appendChild(btn);
+      });
+    }
+
+    function renderCard() {
+      const card = state.current;
+      const flippedClass = state.flipped ? " flipped" : "";
+
+      els.stage.innerHTML = `
+        <button type="button" class="card-scene" id="cardScene" aria-label="카드 뒤집기">
+          <div class="card${flippedClass}" id="flashcard">
+            <div class="card-face front">
+              <div class="card-top">
+                <span class="badge ${card.difficulty}">${card.difficulty}</span>
+                <span class="hint">스페인어</span>
+              </div>
+              <div class="card-body"><div class="card-text">${escapeHtml(card.front)}</div></div>
+              <div class="card-label">탭하여 뒤집기</div>
+            </div>
+            <div class="card-face back">
+              <div class="card-top">
+                <span class="badge ${card.difficulty}">${card.difficulty}</span>
+                <span class="hint">한국어</span>
+              </div>
+              <div class="card-body"><div class="card-text">${escapeHtml(card.back)}</div></div>
+              <div class="card-label">맞았는지 골라 주세요</div>
+            </div>
+          </div>
+        </button>
+        <p class="flip-hint" id="flipHint" ${state.flipped ? "hidden" : ""}>카드를 탭하면 한국어 뜻이 보여요</p>
+        <div class="actions" id="actions" ${state.flipped ? "" : "hidden"}>
+          <button type="button" class="btn btn-wrong" id="btnWrong">틀림</button>
+          <button type="button" class="btn btn-right" id="btnRight">맞음</button>
+        </div>
+      `;
+
+      document.getElementById("cardScene").addEventListener("click", flipCard);
+      document.getElementById("btnWrong").addEventListener("click", (e) => {
+        e.stopPropagation();
+        markWrong();
+      });
+      document.getElementById("btnRight").addEventListener("click", (e) => {
+        e.stopPropagation();
+        markCorrect();
+      });
+    }
+
+    function renderSummary() {
+      const accuracy = state.correct + state.wrong > 0
+        ? Math.round((state.correct / (state.correct + state.wrong)) * 100)
+        : 0;
+
+      els.stage.innerHTML = `
+        <div class="summary">
+          <h2>세션 완료!</h2>
+          <div class="big">${accuracy}%</div>
+          <p class="sub">이번 세션 정답률</p>
+          <div class="summary-grid">
+            <div class="cell"><strong>${state.initialTotal}</strong>학습 카드</div>
+            <div class="cell"><strong>${state.correct}</strong>맞음</div>
+            <div class="cell"><strong>${state.wrong}</strong>틀림(복습)</div>
+            <div class="cell"><strong>${state.filter}</strong>필터</div>
+          </div>
+          <p>틀린 카드는 모두 다시 맞춰 내셨어요. 수고했어요!</p>
+          <button type="button" class="btn-primary" id="btnRestart">같은 난이도로 다시 하기</button>
+          <button type="button" class="btn-ghost" id="btnAll">전체 카드로 시작</button>
+        </div>
+      `;
+
+      document.getElementById("btnRestart").addEventListener("click", () => {
+        startSession({ resume: false });
+      });
+      document.getElementById("btnAll").addEventListener("click", () => {
+        state.filter = "전체";
+        startSession({ resume: false });
+      });
+    }
+
+    function renderEmpty() {
+      els.stage.innerHTML = `
+        <div class="empty">
+          <h2>카드가 없어요</h2>
+          <p>이 난이도에 해당하는 문장이 없습니다.<br/>다른 난이도를 골라 주세요.</p>
+          <button type="button" class="btn-primary" id="btnAllEmpty">전체 보기</button>
+        </div>
+      `;
+      document.getElementById("btnAllEmpty").addEventListener("click", () => {
+        state.filter = "전체";
+        startSession({ resume: false });
+      });
+    }
+
+    function render() {
+      renderFilters();
+      updateProgress();
+      els.progressWrap.style.display = state.done && state.initialTotal === 0 ? "none" : "";
+
+      if (state.done && state.initialTotal === 0) {
+        renderEmpty();
+      } else if (state.done) {
+        renderSummary();
+      } else if (state.current) {
+        renderCard();
+      } else {
+        renderEmpty();
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    /* 키보드: 스페이스/엔터 뒤집기, 1=틀림 2=맞음 */
+    document.addEventListener("keydown", (e) => {
+      if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+      if (e.key === " " || e.key === "Enter") {
+        if (!state.flipped && state.current && !state.done) {
+          e.preventDefault();
+          flipCard();
+        }
+      } else if ((e.key === "1" || e.key === "ArrowLeft") && state.flipped) {
+        markWrong();
+      } else if ((e.key === "2" || e.key === "ArrowRight") && state.flipped) {
+        markCorrect();
+      }
+    });
+
+    /* 시작: 같은 필터 세션이 있으면 이어하기 */
+    state.filter = "전체";
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data && data.filter && DIFFICULTIES.includes(data.filter) && !data.done) {
+          state.filter = data.filter;
+        }
+      }
+    } catch (_) {}
+
+    startSession({ resume: true });
+  </script>
+</body>
+</html>
